@@ -18,7 +18,6 @@ function save_options() {
 // stored in chrome.storage.
 function restore_options() {
     chrome.storage.sync.get({
-    // Default value was previously 10.
     slide_time: 30,
   }, function(items) {
     document.getElementById('slide_time').value = items.slide_time;

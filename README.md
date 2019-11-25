@@ -2,11 +2,9 @@
 
 This is an updated version of an open-source Google Chrome extension for displaying Power BI Reports in a slideshow mode on Google Chrome. I have modified the original code to programatically refresh the report upon the cyclying of each page. This guarantees that, upon each page cycle, the Report's consumers are looking at the freshest data. 
 
-<p>This is a problem many Power BI report creators have run into (myself included) when utilizing Direct Query mode in a Power BI Report: the data will refresh in the background, but the associated report visuals' refresh capabilities are limited to a minimum Power BI parameter that may be insuffcient for report creators. 
+<p>This is a problem many Power BI report creators have run into (myself included) when utilizing Direct Query mode in a Power BI Report: the data will refresh in the background, but the associated report visuals will not refresh as frequently as the data does in the background. 
 
 <p>With this extension, your visuals will now update WITH your data in near Real-Time (according to what refresh/slide time you choose), and you will not be constrained to the Power BI Service's minumum parameters.
-
-<p>The default refresh/slide time has now been set to 30 seconds as of 26 July 2019.
 
 <p> Many thanks to user @PicolotoLF.
 

@@ -1,17 +1,40 @@
 var time_transaction;
+var i = true;
+var begin_execution = 1;
 
-window.onload = function() {
-    chrome.storage.sync.get({
-    // Default value was previously 10.
-    slide_time: 30,
-    }, function(items) {
-      time_transaction = items.slide_time;
-    }
-  );
-    callAngu()
+
+window.onload = function () {
+
+    chrome.storage.sync.get(
+        { slide_time: 30 }
+        ,
+        function (items) {
+            time_transaction = items.slide_time;
+        }
+    );
+
+
+    chrome.storage.sync.get(
+        { execute_trigger: 0 }
+        ,
+        function (items) {
+            begin_execution = items.execute_trigger;
+            begin();
+        }
+    );
+
 }
 
-var i = true;
+
+function begin() {
+    if (begin_execution === 1) {
+        callAngu();
+    }
+    else {
+        //alert(begin_execution);
+    }
+}
+
 
 function myLoop() {
 
