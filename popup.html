@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!--Reference Libraries-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+        <script type="text/javascript" src="https://getbootstrap.com/dist/js/bootstrap.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://getbootstrap.com/dist/css/bootstrap.css" />
+
+        <title>Power BI Real-Time Slideshow</title>
+        <!--Reference Custom CSS file-->
+        <link rel="stylesheet" type="text/css" href="popup.css" />
+
+    </head>
+    <body>
+
+        <!--First Container-->
+        <div class="container" id="title_container">
+            <h2>
+                <a href="https://imgbb.com/"><img src="https://i.ibb.co/vx5CZrd/icon48.png" alt="icon48" border="0"></a>
+                <h2>Power BI Real-Time Slideshow</h2>
+                <!--Power BI Real-Time Slideshow-->
+            </h2>
+        </div>
+
+        <!--Second Container-->
+        <div class="container" id="refresh_container">
+
+            <div class="title">Refresh Time:</div>
+
+            <select id="refresh_time">
+                <option value=30>30s</option>
+                <option value=40>40s</option>
+                <option value=50>50s</option>
+                <option value=60>60s</option>
+            </select>
+
+            <button id="refresh_time_save">Save</button>
+            <div id="refresh_status"></div>
+
+        </div>
+
+        <!--Third Container-->
+        <div class="container" id="slide_container">
+
+            <div class="title">Slide Time:</div>
+
+            <select id="slide_time">
+                <option value=5>5s</option>
+                <option value=15>15s</option>
+                <option value=20>20s</option>
+                <option value=25>25s</option>
+                <option value=30>30s</option>
+                <option value=35>35s</option>
+                <option value=40>40s</option>
+                <option value=45>45s</option>
+                <option value=50>50s</option>
+                <option value=55>55s</option>
+                <option value=60>60s</option>
+            </select>
+
+            <button id="slide_time_save">Save</button>
+            <div id="slide_status"></div>
+
+        </div>
+
+        <!--Fourth Container-->
+        <div class="container" id="button_container">
+            <button id="play">Play</button>
+            <button id="stop">Stop</button>
+        </div>
+
+        <script src="popup.js"></script>
+
+    </body>
+</html>

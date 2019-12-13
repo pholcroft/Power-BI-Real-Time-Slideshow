@@ -1,6 +1,7 @@
-var time_transaction;
-var i = true;
-var begin_execution = 1;
+var slideTime;
+var refreshTime;
+var execute = 1;
+var refresh = 1;
 
 
 window.onload = function () {
@@ -9,58 +10,75 @@ window.onload = function () {
         { slide_time: 30 }
         ,
         function (items) {
-            time_transaction = items.slide_time;
+            slideTime = items.slide_time;
         }
     );
 
+    chrome.storage.sync.get(
+        { refresh_time: 60 }
+        ,
+        function (items) {
+            refreshTime = items.refresh_time;
+        }
+    );
 
     chrome.storage.sync.get(
         { execute_trigger: 0 }
         ,
         function (items) {
-            begin_execution = items.execute_trigger;
-            begin();
+            execute = items.execute_trigger;
+            beginSlideShow();
         }
     );
 
 }
 
+function beginSlideShow() {
 
-function begin() {
-    if (begin_execution === 1) {
-        callAngu();
+    if (execute === 1) {
+        firstFullScreen();
     }
-    else {
-        //alert(begin_execution);
-    }
+
 }
 
+function firstFullScreen() {
 
-function myLoop() {
+    angular.element(document.getElementsByClassName("enterFullScreenBtn")).click();
+    SlideShowLoop();
+
+}
+
+function SlideShowLoop() {
 
     setTimeout(function () {
 
         angular.element(document.getElementsByClassName("fullScreenNext floatingViewBtn")).click()
-
-        // These 3 JS lines were added to programatically refresh the Power BI Report via the
-        // the Refresh Button in the Power BI Service's UI.
         angular.element(document.getElementsByClassName("exitFullScreenBtn floatingViewBtn")).click()
-        angular.element(document.getElementsByClassName("refresh")).click()
+
+        if (refresh === 1) {
+            angular.element(document.getElementsByClassName("refresh")).click();
+            refresh = 0;
+        }
+        
         angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
 
-        if (i === true) {
-            myLoop();
+        if (execute === 1) {
+            SlideShowLoop();
         }
 
-    }, time_transaction * 1000)
+    }, slideTime * 1000);
 
-    console.log(time_transaction);
+    console.log(slideTime);
 
 }
 
-function callAngu() {
+function RefreshLoop() {
 
-    angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
-    myLoop();
+    setInterval(
+        function () {
+            refresh = 1;
+        },
+        refreshTime * 1000
+    )
 
 }
