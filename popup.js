@@ -2,7 +2,9 @@
 document.addEventListener('DOMContentLoaded', restore_options);
 
 function save_slide_time_options() {
+
     var slide_time = document.getElementById('slide_time').value;
+
     chrome.storage.sync.set({
         slide_time: slide_time,
     }, function () {
@@ -12,10 +14,18 @@ function save_slide_time_options() {
             status.textContent = '';
         }, 750);
     });
+
+    chrome.tabs.executeScript(null,
+        {
+            code: "location.reload()"
+        }
+    );
 }
 
 function save_refresh_time_options() {
+
     var refresh_time = document.getElementById('refresh_time').value;
+
     chrome.storage.sync.set({
         refresh_time: refresh_time,
     }, function () {
@@ -25,6 +35,12 @@ function save_refresh_time_options() {
             status.textContent = '';
         }, 750);
     });
+
+    chrome.tabs.executeScript(null,
+        {
+            code: "location.reload()"
+        }
+    );
 }
 
 function stop_execution() {
@@ -51,7 +67,7 @@ function start_execution() {
 // stored in chrome.storage.
 function restore_options() {
     chrome.storage.sync.get({
-        slide_time: 30, refresh_time: 60
+        slide_time: 30, refresh_time: 180
     }, function (items) {
             document.getElementById('slide_time').value = items.slide_time;
             document.getElementById('refresh_time').value = items.refresh_time;
