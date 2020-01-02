@@ -4,7 +4,7 @@
 
 | Release Date | Released By | Tags |
 | --- | --- | --- |
-| 2019-01-02 | DMiradakis | Power BI, Power BI Real-Time Slideshow |
+| 2020-01-02 | DMiradakis | Power BI, Power BI Real-Time Slideshow |
 
 ## About The Extension
 This is an open source Google Chrome extension for displaying Power BI Reports in a Slideshow fashion utilizing dynamic data from the data source(s).
