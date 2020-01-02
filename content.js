@@ -1,66 +1,64 @@
-var time_transaction;
-var i = true;
-var begin_execution = 1;
+var slideTime;
+var refreshTime;
+var elapsedTime = 0;
+var execute = 1;
 
 
 window.onload = function () {
 
+    // Retrieve values from chrome.storage and update global variables. Include default values for the chrome.storage pairs.
     chrome.storage.sync.get(
-        { slide_time: 30 }
+        { execute_trigger: 0, slide_time: 25, refresh_time: 180 }
         ,
         function (items) {
-            time_transaction = items.slide_time;
-        }
-    );
-
-
-    chrome.storage.sync.get(
-        { execute_trigger: 0 }
-        ,
-        function (items) {
-            begin_execution = items.execute_trigger;
-            begin();
+            slideTime = items.slide_time;
+            refreshTime = items.refresh_time;
+            execute = items.execute_trigger;
+            beginSlideShow();
         }
     );
 
 }
 
+function beginSlideShow() {
 
-function begin() {
-    if (begin_execution === 1) {
-        callAngu();
+    if (execute === 1) {
+        firstFullScreen();
     }
-    else {
-        //alert(begin_execution);
-    }
-}
-
-
-function myLoop() {
-
-    setTimeout(function () {
-
-        angular.element(document.getElementsByClassName("fullScreenNext floatingViewBtn")).click()
-
-        // These 3 JS lines were added to programatically refresh the Power BI Report via the
-        // the Refresh Button in the Power BI Service's UI.
-        angular.element(document.getElementsByClassName("exitFullScreenBtn floatingViewBtn")).click()
-        angular.element(document.getElementsByClassName("refresh")).click()
-        angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
-
-        if (i === true) {
-            myLoop();
-        }
-
-    }, time_transaction * 1000)
-
-    console.log(time_transaction);
 
 }
 
-function callAngu() {
+function firstFullScreen() {
 
-    angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
-    myLoop();
+    // It is necessary to separate the first Full Screen click from the other recursive clicks.
+    angular.element(document.getElementsByClassName("enterFullScreenBtn")).click();
+    SlideShowLoop();
+
+}
+
+function SlideShowLoop() {
+
+    // The setInterval function creates an infinite loop which is desired.
+    setInterval(
+        function () {
+
+            angular.element(document.getElementsByClassName("fullScreenNext floatingViewBtn")).click()
+            angular.element(document.getElementsByClassName("exitFullScreenBtn floatingViewBtn")).click()
+
+            // This conditional statement prevents the data source(s) from being overloaded by constant querying.
+            if (elapsedTime > refreshTime) {
+                angular.element(document.getElementsByClassName("refresh")).click();
+                // Reset the elapsed time if the Refresh Button is clicked.
+                elapsedTime = 0;
+            }
+
+            angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
+
+            // Accumulate the elapsed time from the previous refresh.
+            elapsedTime = elapsedTime + parseInt(slideTime, 10);
+        },
+
+        slideTime * 1000
+    )
 
 }

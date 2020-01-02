@@ -1,41 +1,43 @@
-// Original Author: Power BI Username _picoloto43
-// Additional Author: Power BI Username DMiradakis
-// Last Updated: 06 December 2019
+// Author(s): Power BI Username _picoloto43, Power BI Username DMiradakis
+// Last Updated: 2020-01-02
 
 {
   "name": "Power BI Real-Time Slideshow",
   "manifest_version": 2,
   "version": "2.0",
   "description": "Power BI Real-Time Slideshow",
-  "options_page": "options.html",
 
   "icons": {
-    "19": "img/Power_BI_Icon_Reduced_2.png"
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
   },
 
-  "browser_action": {
-    "default_icon": "img/Power_BI_Icon_Reduced_2.png"
-  },
   "permissions": [
     "activeTab",
     "clipboardWrite",
     "tabs",
-    "http://*/*",
-    "https://*/*",
+    "*://app.powerbi.com/*",
     "declarativeContent",
     "storage"
   ],
+
+  "content_security_policy": "script-src 'self' https://code.jquery.com/jquery.min.js https://getbootstrap.com/dist/js/bootstrap.js https://getbootstrap.com/dist/css/bootstrap.css; object-src 'self'",
 
   "background": {
     "scripts": [ "background.js" ],
     "persistent": false
   },
 
+  "page_action": {
+    "default_icon": "img/Power_BI_Icon_Reduced_2.png",
+    "default_popup": "popup.html"
+  },
+
   "content_scripts": [
     {
-      "matches": [ "http://*/*", "https://*/*" ],
+      "matches": [ "*://app.powerbi.com/*" ],
       "js": [ "jquery-2.2.0.min.js", "angular.min.js", "content.js" ]
     }
   ]
-
 }
