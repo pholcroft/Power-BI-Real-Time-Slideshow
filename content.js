@@ -3,7 +3,16 @@ var refreshTime;
 var elapsedTime = 0;
 var execute = 1;
 
+window.onload = function () {
 
+    angular.element(document.getElementsByClassName("expanderButton")).click();
+
+    var testElement = $("li[class|='item ng-star-insert'],[title|='GHMS Company Status Report']");
+    alert(testElement.attr("title"));
+}
+
+
+/*
 window.onload = function () {
 
     // Retrieve values from chrome.storage and update global variables. Include default values for the chrome.storage pairs.
@@ -62,3 +71,4 @@ function SlideShowLoop() {
     )
 
 }
+*/
