@@ -37,7 +37,7 @@
   "content_scripts": [
     {
       "matches": [ "*://app.powerbi.com/*" ],
-      "js": [ "jquery-2.2.0.min.js", "angular.min.js", "content.js" ]
+      "js": [ "jquery-3.4.1.js", "angular.min.js", "content.js" ]
     }
   ]
 }

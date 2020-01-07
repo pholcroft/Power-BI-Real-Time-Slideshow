@@ -3,13 +3,29 @@ var refreshTime;
 var elapsedTime = 0;
 var execute = 1;
 
-window.onload = function () {
+$(window).on("load", function() {
 
-    angular.element(document.getElementsByClassName("expanderButton")).click();
+    // Retrieve the name of the currently selected report from the top left-hand corner of the page.
+    var $spans = $("span[ng-bind='breadcrumb.label'][class='pbi-fcl-np']").last();
+    var reportTitle = $spans.text();
 
-    var testElement = $("li[class|='item ng-star-insert'],[title|='GHMS Company Status Report']");
-    alert(testElement.attr("title"));
-}
+    // Expand the navigation pane for the current Workspace.
+
+    //var paneExpanderHeader = document.querySelector('.paneExpanderHeader');
+    //var workspaceNavigationButton = paneExpanderHeader.querySelector('.expanderButton');
+    //angular.element(workspaceNavigationButton).click();
+    $("button.expanderButton", "div.paneExpanderHeader").click();
+
+    // Retrieve the name of the desired dataset from the Workspace's navigation pane using the reportTitle from above.
+    var $datasetName = $("li[class='item'][class='ng-star-inserted'][title='" + reportTitle + "']");
+
+    var $t = $("li [class='item'] [class='ng-star-inserted'] [title='" + reportTitle + "']").attr("title")
+
+    console.log(reportTitle);
+    console.log($t);
+    //console.log(datasetName.attr('title'));
+
+})
 
 
 /*
