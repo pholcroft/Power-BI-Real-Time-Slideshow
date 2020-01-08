@@ -3,27 +3,49 @@ var refreshTime;
 var elapsedTime = 0;
 var execute = 1;
 
-$(window).on("load", function() {
+$(window).on("load", function () {
 
     // Retrieve the name of the currently selected report from the top left-hand corner of the page.
     var $spans = $("span[ng-bind='breadcrumb.label'][class='pbi-fcl-np']").last();
     var reportTitle = $spans.text();
 
     // Expand the navigation pane for the current Workspace.
-
-    //var paneExpanderHeader = document.querySelector('.paneExpanderHeader');
-    //var workspaceNavigationButton = paneExpanderHeader.querySelector('.expanderButton');
-    //angular.element(workspaceNavigationButton).click();
     $("button.expanderButton", "div.paneExpanderHeader").click();
 
-    // Retrieve the name of the desired dataset from the Workspace's navigation pane using the reportTitle from above.
-    var $datasetName = $("li[class='item'][class='ng-star-inserted'][title='" + reportTitle + "']");
+    setTimeout(function () {
 
-    var $t = $("li [class='item'] [class='ng-star-inserted'] [title='" + reportTitle + "']").attr("title")
+        // Show hidden list elements on the left-hand side navigation pane.
+        $("li").show();
 
-    console.log(reportTitle);
-    console.log($t);
-    //console.log(datasetName.attr('title'));
+        // Filter navigation pane's DOM to Dataset list.
+        var $datasetItems = $("button.headerButton[aria-label='Datasets']").next();
+
+        // Dynamically find the list item corresponding to the currently opened report.
+        var $datasetName = $datasetItems.find("li.item.ng-star-inserted[title='" + reportTitle + "']");
+
+        // Find the ellipsis button corresponding to the list item.
+        var $datasetEllipsisButton = $datasetName.find("button.mat-menu-trigger.openMenu");
+        // Click the ellipsis button to load the popup menu.
+        $datasetEllipsisButton.click();
+
+        setTimeout(function () {
+            console.log("Ellipsis Button Clicked. Proceeding to Refresh.");
+
+            // Navigate the DOM to find the buttons on the popup menu.
+            var $matMenuButtons = $("div.mat-menu-content").find("button");
+
+            // Find the dataset's Refresh Button.
+            var $refreshButton = $matMenuButtons.find("span:contains('Refresh now')").parent();
+            // Click the Refresh Button.
+            $refreshButton.click();
+
+            console.log("Refreshed.")
+
+        }, 4000);
+
+
+
+    }, 2000)
 
 })
 
