@@ -1,3 +1,4 @@
+var importModeDOMChangedWaitTime = 2;
 var slideTime;
 var refreshTime;
 var elapsedTime = 0;
@@ -12,6 +13,8 @@ $(window).on("load", function () {
     // Expand the navigation pane for the current Workspace.
     $("button.expanderButton", "div.paneExpanderHeader").click();
 
+    // JQuery does not have an event listener for when particular assets are loaded into the DOM and are then ready.
+    // Therefore, the Wait Time must be approximated until a better solution is found.
     setTimeout(function () {
 
         // Show hidden list elements on the left-hand side navigation pane.
@@ -29,8 +32,9 @@ $(window).on("load", function () {
         $datasetEllipsisButton.click();
 
         setTimeout(function () {
-            console.log("Ellipsis Button Clicked. Proceeding to Refresh.");
 
+            console.log("Dataset Ellipsis Button Clicked. Proceeding to Refresh.");
+             
             // Navigate the DOM to find the buttons on the popup menu.
             var $matMenuButtons = $("div.mat-menu-content").find("button");
 
@@ -39,13 +43,14 @@ $(window).on("load", function () {
             // Click the Refresh Button.
             $refreshButton.click();
 
-            console.log("Refreshed.")
+            console.log("Refreshed. Closing popup menu.")
+
+            // Close the popup menu.
+            $datasetEllipsisButton.click();
 
         }, 4000);
 
-
-
-    }, 2000)
+    }, importModeDOMChangedWaitTime * 1000)
 
 })
 
