@@ -156,6 +156,7 @@ function DetermineConnectivityMode() {
 
 window.onload = function () {
 
+    /*
     // Retrieve values from chrome.storage and update global variables. Include default values for the chrome.storage pairs.
     chrome.storage.sync.get(
         { execute_trigger: 0, slide_time: 25, refresh_time: 60, connectivityMode: "undetermined" },
@@ -173,6 +174,22 @@ window.onload = function () {
             }
         }
     );
+    */
+
+    var $spans = $("span.pbi-fcl-np[ng-bind='breadcrumb.label']").last();
+    var reportTitle = $spans.text();
+
+    function LogDOMChanges(changes) {
+
+        if (changes[0]["added"]) {
+            console.log(changes[0]["added"]);
+        }
+
+        $("div.quickAccessPanePlaceHolder").mutationSummary("disconnect");
+
+    }
+
+    $("div.quickAccessPanePlaceHolder").mutationSummary("connect", LogDOMChanges, [{ element: "li.item.ng-star-inserted[title='" + reportTitle + "']" }]);
 
 }
 
