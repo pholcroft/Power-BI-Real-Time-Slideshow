@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
-    <head>
+<head>
 
-        <!--Reference Libraries-->
-        <script type="text/javascript" src="https://getbootstrap.com/dist/js/bootstrap.js"></script>
+    <!--Reference Libraries-->
+    <script type="text/javascript" src="https://getbootstrap.com/dist/js/bootstrap.js"></script>
 
-        <title>Power BI Real-Time Slideshow</title>
-        <!--Reference Custom CSS file-->
-        <link rel="stylesheet" type="text/css" href="popup.css" />
+    <title>Power BI Real-Time Slideshow</title>
+    <!--Reference Custom CSS file-->
+    <link rel="stylesheet" type="text/css" href="primer.css" />
+    <link rel="stylesheet" type="text/css" href="popup.css" />
 
-    </head>
+</head>
     <body>
 
         <!--First Container-->
@@ -21,27 +22,27 @@
         </div>
 
         <!--Second Container-->
-        <div class="container" id="refresh_container">
+        <div class="border d-flex flex-column flex-md-row">
 
-            <div class="title">Refresh Time:</div>
+            <h4 class="title">Refresh Time:</h4>
 
-            <select id="refresh_time">
+            <select class="flex-1" id="refresh_time">
                 <option value=180>3mins</option>
                 <option value=240>4mins</option>
                 <option value=300>5mins</option>
             </select>
 
-            <button id="refresh_time_save">Save</button>
+            <button class="btn btn-small flex-1" id="refresh_time_save">Save</button>
             <div id="refresh_status"></div>
 
         </div>
 
         <!--Third Container-->
-        <div class="container" id="slide_container">
+        <div class="border d-flex flex-column flex-md-row">
 
-            <div class="title">Slide Time:</div>
+            <h4 class="title">Slide Time:</h4>
 
-            <select id="slide_time">
+            <select class="flex-1" id="slide_time">
                 <option value=15>15s</option>
                 <option value=20>20s</option>
                 <option value=25>25s</option>
@@ -54,15 +55,15 @@
                 <option value=60>60s</option>
             </select>
 
-            <button id="slide_time_save">Save</button>
+            <button class="btn btn-small flex-1" id="slide_time_save">Save</button>
             <div id="slide_status"></div>
 
         </div>
 
         <!--Fourth Container-->
-        <div class="container" id="button_container">
-            <button id="play">Play</button>
-            <button id="stop">Stop</button>
+        <div class="d-flex flex-column flex-md-row">
+            <button class="btn btn-primary flex-1" id="play">Play</button>
+            <button class="btn stop-btn text-white flex-1" id="stop">Stop</button>
         </div>
 
         <script src="popup.js"></script>
