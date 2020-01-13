@@ -3,6 +3,8 @@ var slideTime;
 var refreshTime;
 var elapsedTime = 0;
 var execute = 1;
+var reportName;
+var chromeReportName;
 
 
 function ImportRefresh() {
@@ -11,18 +13,24 @@ function ImportRefresh() {
     var $spans = $("span.pbi-fcl-np[ng-bind='breadcrumb.label']").last();
     var reportTitle = $spans.text();
 
-    // Expand the navigation pane for the current Workspace.
-    $("button.expanderButton", "div.paneExpanderHeader").click();
-
     // Invoke listener for added list item under Datasets on the quick access navigation pane.
     $("div.quickAccessPanePlaceHolder").mutationSummary("connect", QuickAccessPaneLoaded, [{ element: "li.item.ng-star-inserted[title='" + reportTitle + "']" }]);
+
+    // Expand the navigation pane for the current Workspace.
+    $("button.expanderButton", "div.paneExpanderHeader").click();
 
     function QuickAccessPaneLoaded(mSummary) {
 
         // Disconnect listener.
-        $("div.quickAccessPanePlaceHolder").mutationSummary("disconnect");
+        $("div.quickAccessPanePlaceHolder").mutationSummary("disconnect", QuickAccessPaneLoaded, [{ element: "li.item.ng-star-inserted[title='" + reportTitle + "']" }]);
+
+        console.log("QuickAccessPaneLoaded Summary:");
+        console.log(mSummary);
 
         if (mSummary[0]["added"]) {
+
+            // Invoke listener for popup menu.
+            $(document).mutationSummary("connect", DatasetEllipsisClicked, [{ element: "button.mat-menu-item" }]);
 
             // Show hidden list elements on the quick access navigation pane.
             $("li").show();
@@ -38,16 +46,13 @@ function ImportRefresh() {
             // Click the ellipsis button to load the popup menu.
             $datasetEllipsisButton.click();
 
-            // Invoke listener for popup menu.
-            $(document).mutationSummary("connect", EllipsisClicked, [{ element: "div.mat-menu-content" }]);
-
         }
-
     }
 
-    function EllipsisClicked(mSummary) {
+    function DatasetEllipsisClicked(mSummary) {
 
-        $(document).mutationSummary("disconnect");
+        // Disconnect listener.
+        $(document).mutationSummary("disconnect", DatasetEllipsisClicked, [{ element: "button.mat-menu-item" }]);
 
         if (mSummary[0]["added"]) {
 
@@ -60,10 +65,28 @@ function ImportRefresh() {
             $refreshButton.click();
 
             /// Close the popup menu.
-            window.close();
+            //window.close();
 
         }
     }
+}
+
+
+function GetReportName() {
+
+    // Retrieve the name of the currently selected report from the top left-hand corner of the page.
+    var $spans = $("span.pbi-fcl-np[ng-bind='breadcrumb.label']").last();
+    var chromeReportName = $spans.text();
+
+    // Write the Report's name to Chrome Storage.
+    chrome.storage.sync.set(
+        { reportName: chromeReportName },
+        function () {
+            // Now determine the Connectivity Mode of the current Report.
+            DetermineConnectivityMode();
+        }
+    )
+
 }
 
 
@@ -73,18 +96,24 @@ function DetermineConnectivityMode() {
     var $spans = $("span.pbi-fcl-np[ng-bind='breadcrumb.label']").last();
     var reportTitle = $spans.text();
 
-    // Expand the navigation pane for the current Workspace.
-    $("button.expanderButton", "div.paneExpanderHeader").click();
-
     // Invoke listener for added list item under Datasets on the quick access navigation pane.
     $("div.quickAccessPanePlaceHolder").mutationSummary("connect", QuickAccessPaneLoaded, [{ element: "li.item.ng-star-inserted[title='" + reportTitle + "']" }]);
+
+    // Expand the navigation pane for the current Workspace.
+    $("button.expanderButton", "div.paneExpanderHeader").click();
 
     function QuickAccessPaneLoaded(mSummary) {
 
         // Disconnect listener.
-        $("div.quickAccessPanePlaceHolder").mutationSummary("disconnect");
+        $("div.quickAccessPanePlaceHolder").mutationSummary("disconnect", QuickAccessPaneLoaded, [{ element: "li.item.ng-star-inserted[title='" + reportTitle + "']" }]);
+
+        console.log("QuickAccessPaneLoaded Summary:");
+        console.log(mSummary);
 
         if (mSummary[0]["added"]) {
+
+            // Invoke listener for popup menu.
+            $(document).mutationSummary("connect", DatasetEllipsisClicked, [{ element: "button.mat-menu-item" }]);
 
             // Show hidden list elements on the quick access navigation pane.
             $("li").show();
@@ -100,95 +129,138 @@ function DetermineConnectivityMode() {
             // Click the ellipsis button to load the popup menu.
             $datasetEllipsisButton.click();
 
-            // Invoke listener for popup menu.
-            //$(document).mutationSummary("connect", EllipsisClicked, [{ element: "div.mat-menu-content" }]);
-            //$(document).mutationSummary("connect", EllipsisClicked, [{ all: true }]);
-
         }
 
     }
 
-    $(document).mutationSummary("connect", EllipsisClicked, [{ element: "div.mat-menu-content" }]);
-
-    function EllipsisClicked(mSummary) {
+    function DatasetEllipsisClicked(mSummary) {
 
         // Disconnect listener.
-        $(document).mutationSummary("disconnect");
+        $(document).mutationSummary("disconnect", DatasetEllipsisClicked, [{ element: "button.mat-menu-item" }]);
+
+        console.log("DatasetEllipsisClicked Summary:");
+        console.log(mSummary);
 
         if (mSummary[0]["added"]) {
 
-            console.log("Test");
-            console.log(mSummary);
+            // Invoke listener to identify when a navigation has taken place.
+            $(document).mutationSummary("connect", SearchUI, [{ element: "span.refreshSectionTitle" }]);
 
             // Navigate the DOM to find the buttons on the popup menu.
-            var $matMenuButtons = $("div.mat-menu-content")//.find("button.mat-menu-item");
+            var $matMenuButtons = $("div.mat-menu-content").find("button.mat-menu-item");
 
-            console.log($matMenuButtons);
+            if ($matMenuButtons) {
+                console.log("Popup menu buttons found.")
+            }
+            else if (!$matMenuButtons) {
+                console.log("Popup menu buttons NOT found.")
+            }
 
             // Find the dataset's Settings Button.
             var $settingsButton = $(document).find("span:contains('Settings')").parent();
 
             // Click the Settings Button.
-
-            $settingsButton.click(function () {
-                console.log("Settings button clicked.");
-            });
-
-
-            console.log("Settings button clicked 2.")
-
-            // Invoke listener to identify when a navigation has taken place.
-            $(document).mutationSummary("connect", SearchUI, [{ all: true }]);
+            $settingsButton.click();
 
         }
-
-
-
     }
 
     function SearchUI(mSummary) {
 
         // Disconnect listener.
-        $(document).mutationSummary("disconnect");
+        $(document).mutationSummary("disconnect", SearchUI, [{ element: "span.refreshSectionTitle" }]);
 
-        // Create variables and search DOM for determining Connectivity Mode.
-        $importCheck = $("span.refreshSectionTitle:contains('Scheduled refresh')");
-        $directQueryCheck = $("span.refreshSectionTitle:contains('Scheduled cache refresh')");
+        console.log("SearchUI Summary:");
+        console.log(mSummary);
 
-        // Check which variable returns a value.
-        if ($importCheck.length) {
-            console.log("Connectivity Mode Determined: Import. \n>>> Navigating back to the report.");
-            chrome.storage.sync.set(
-                { connectivityMode: "Import" },
-                function () {
-                    // Navigate back to Report.
-                    window.history.back();
-                    // Invoke listener for navigating back to Report.
-                    $(document).mutationSummary("connect", ReloadReportPage(), [{ all: true }]);
-                }
-            );
+        if (mSummary) {
+
+            // Create variables and search DOM for determining Connectivity Mode.
+            $importCheck = $("span.refreshSectionTitle:contains('Scheduled refresh')");
+            $directQueryCheck = $("span.refreshSectionTitle:contains('Scheduled cache refresh')");
+
+            // Check which variable returns a value.
+            if ($importCheck.length) {
+                console.log("Connectivity Mode Determined: Import. \n>>> Navigating back to the report.");
+                chrome.storage.sync.set(
+                    // Store Connectivity Mode in Chrome Storage.
+                    { connectivityMode: "Import" },
+                    function () {
+                        // Invoke the Report's popup menu under the Reports Header to navigate back to the Power BI Report.
+                        ReportEllipsisClick();
+                    }
+                );
+            }
+            else if ($directQueryCheck.length) {
+                console.log("Connectivity Mode Determined: Direct Query. \n>>> Navigating back to the report.");
+                chrome.storage.sync.set(
+                    // Store Connectivity Mode in Chrome Storage.
+                    { connectivityMode: "Direct Query" },
+                    function () {
+                        // Invoke the Report's popup menu under the Reports Header to navigate back to the Power BI Report.
+                        ReportEllipsisClick();
+                    }
+                );
+            }
         }
-        else if ($directQueryCheck.length) {
-            console.log("Connectivity Mode Determined: Direct Query. \n>>> Navigating back to the report.");
-            chrome.storage.sync.set(
-                { connectivityMode: "Direct Query" },
-                function () {
-                    // Navigate back to Report.
-                    window.history.back();
-                    // Invoke listener for navigating back to Report.
-                    $(document).mutationSummary("connect", ReloadReportPage(), [{ all: true }]);
-                }
-            );
-        }
+    }
 
+    function ReportEllipsisClick() {
+
+        // Invoke listener for popup menu buttons.
+        $(document).mutationSummary("connect", ReportEllipsisClicked, [{ element: "button.mat-menu-item" }]);
+
+        // Show hidden list elements on the quick access navigation pane.
+        $("li").show();
+
+        // Filter navigation pane's DOM to Report list.
+        var $reportItems = $("button.headerButton[aria-label='Reports']").next();
+
+        // Dynamically find the list item corresponding to the currently opened report.
+        var $reportName = $reportItems.find("li.item.ng-star-inserted[title='" + reportTitle + "']");
+
+        // Find the ellipsis button corresponding to the list item.
+        var $reportEllipsisButton = $reportName.find("button.mat-menu-trigger.openMenu");
+        // Click the ellipsis button to load the popup menu.
+        $reportEllipsisButton.click();
+
+    }
+
+    function ReportEllipsisClicked(mSummary) {
+
+        // Disconnect listener.
+        $(document).mutationSummary("disconnect", ReportEllipsisClicked, [{ element: "button.mat-menu-item" }]);
+
+        console.log("ReportEllipsisClicked Summary:");
+        console.log(mSummary);
+
+        if (mSummary[0]["added"].length > 0) {
+
+            // Invoke listener to identify when a navigation has taken place.
+            $(document).mutationSummary("connect", ReloadReportPage, [{ element: "button.edit" }]);
+
+            // Navigate the DOM to find the Open button on the popup menu.
+            var $openButton = $("div.mat-menu-content").find("button.mat-menu-item:contains('Open')");
+
+            if ($openButton) {
+                console.log("Open menu button found.")
+            }
+            else if (!$openButton) {
+                console.log("Open menu button NOT found.")
+            }
+
+            // Click the Open Button to navigate back to the Power BI Report.
+            $openButton.click();
+
+        }
     }
 
     function ReloadReportPage(mSummary) {
 
         // Disconnect listener.
-        $(document).mutationSummary("disconnect");
+        $(document).mutationSummary("disconnect", ReloadReportPage, [{ element: "button.edit" }]);
 
-        // Reload the Report's webpage to reinvoke this entire content file.
+        // Reload the Power BI Report page upon navigation.
         location.reload();
 
     }
@@ -199,17 +271,25 @@ window.onload = function () {
 
     // Retrieve values from chrome.storage and update global variables. Include default values for the chrome.storage pairs.
     chrome.storage.sync.get(
-        { execute_trigger: 0, slide_time: 25, refresh_time: 60, connectivityMode: "undetermined" },
+        { execute_trigger: 0, slide_time: 15, refresh_time: 30, reportName: "unknown", connectivityMode: "undetermined" },
         function (items) {
+
+            // Retrieve the name of the currently selected report from the top left-hand corner of the page.
+            var $spans = $("span.pbi-fcl-np[ng-bind='breadcrumb.label']").last();
+            var reportName = $spans.text();
+
             slideTime = items.slide_time;
             refreshTime = items.refresh_time;
+            chromeReportName = items.reportName;
             connectivityMode = items.connectivityMode;
             execute = items.execute_trigger;
 
-            if (execute === 1 && connectivityMode === "undetermined") {
-                DetermineConnectivityMode();
+            if (execute === 1 && (connectivityMode === "undetermined" || chromeReportName != reportName)) {
+                console.log("Determining Connectivity Mode.");
+                GetReportName();
             }
             else if (execute === 1 && (connectivityMode === "Import" || connectivityMode === "Direct Query")) {
+                console.log("Initializing Slideshow.")
                 firstFullScreen();
             }
         }
