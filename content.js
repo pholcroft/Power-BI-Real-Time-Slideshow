@@ -43,16 +43,19 @@ function SlideShowLoop() {
         function () {
 
             angular.element(document.getElementsByClassName("fullScreenNext floatingViewBtn")).click()
-            angular.element(document.getElementsByClassName("exitFullScreenBtn floatingViewBtn")).click()
+            
+            if (refreshTime != 0) {
+                angular.element(document.getElementsByClassName("exitFullScreenBtn floatingViewBtn")).click()
 
-            // This conditional statement prevents the data source(s) from being overloaded by constant querying.
-            if (elapsedTime > refreshTime) {
-                angular.element(document.getElementsByClassName("refresh")).click();
-                // Reset the elapsed time if the Refresh Button is clicked.
-                elapsedTime = 0;
+                // This conditional statement prevents the data source(s) from being overloaded by constant querying.
+                if (elapsedTime > refreshTime) {
+                    angular.element(document.getElementsByClassName("refresh")).click();
+                    // Reset the elapsed time if the Refresh Button is clicked.
+                    elapsedTime = 0;
+                }
+
+                angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
             }
-
-            angular.element(document.getElementsByClassName("enterFullScreenBtn")).click()
 
             // Accumulate the elapsed time from the previous refresh.
             elapsedTime = elapsedTime + parseInt(slideTime, 10);
